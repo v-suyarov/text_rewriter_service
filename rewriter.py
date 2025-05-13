@@ -12,7 +12,7 @@ class QwenRewriter:
             torch_dtype="auto",
             device_map="cuda"
         )
-        print(self.model.hf_device_map)
+        print("📦 QwenRewriter загружен на:", self.model.device)
         self.max_new_tokens = max_new_tokens
         self.generation_config = {
             "temperature": 0.7,
