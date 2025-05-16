@@ -25,9 +25,7 @@ class QwenTagPredictor:
         tag_list = ", ".join(available_tags)
         prompt = (
             f"Прочитай текст, который я оставлю ниже, и выбери от одного "
-            f"до пяти тегов, которые наилучшим образом его описывают. "
-            f"Обязательно ставь только те теги, которые подходят данному "
-            f"тексту на сто процентов.\n"
+            f"до двух тегов, которые наилучшим образом его описывают. "
             f"Допустимы только следующие теги: {tag_list}. "
             f"Верни только список выбранных тегов, разделённый запятыми, "
             f"без лишних слов.\n\n"
@@ -46,5 +44,6 @@ class QwenTagPredictor:
         output_ids = self.model.generate(**inputs, **self.generation_config)[0][len(inputs.input_ids[0]):]
 
         raw_output = self.tokenizer.decode(output_ids, skip_special_tokens=True)
+        print(raw_output)
         tags = [tag.strip() for tag in raw_output.split(",") if tag.strip()]
         return [tag for tag in tags if tag in available_tags]
