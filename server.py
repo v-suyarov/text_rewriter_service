@@ -1,11 +1,14 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
+
+from llm_model import QwenLLM
 from rewriter import QwenRewriter
 from tag_predictor import QwenTagPredictor
 import uvicorn
 
 app = FastAPI()
+shared_llm = None
 rewriter = None
 tag_predictor = None
 
@@ -30,9 +33,10 @@ class TagResponse(BaseModel):
 
 @app.on_event("startup")
 def load_models():
-    global rewriter, tag_predictor
-    rewriter = QwenRewriter()
-    tag_predictor = QwenTagPredictor()
+    global shared_llm, rewriter, tag_predictor
+    shared_llm = QwenLLM()
+    rewriter = QwenRewriter(shared_llm)
+    tag_predictor = QwenTagPredictor(shared_llm)
 
 
 @app.post("/rewrite", response_model=RewriteResponse)
